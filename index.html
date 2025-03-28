@@ -2,20 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Responsive viewport scaling -->
+  <!-- For proper mobile scaling -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Optional: give your mobile browser UI a matching color -->
+  <!-- Change the theme-color if you like -->
   <meta name="theme-color" content="#2d2d2d">
   <title>COOPER FLAGG LYRICS PUZZLE</title>
   <link rel="stylesheet" href="styles.css">
   <script defer src="script.js"></script>
 </head>
 <body>
+
   <!-- Background video -->
   <video autoplay muted loop id="bg-video">
     <source src="cfv.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
+
+  <!-- "CLUES" toggle button (always visible) -->
+  <button id="clues-toggle">CLUES</button>
+
+  <!-- Slide-out panel for clues -->
+  <div id="clues-panel">
+    <h2>CLUES</h2>
+    <div id="clues"></div>
+  </div>
 
   <!-- Main container -->
   <div class="container">
@@ -34,22 +44,15 @@
       </iframe>
     </div>
 
-    <!-- Crossword Puzzle Layout -->
+    <!-- Crossword Puzzle Layout (just the lyrics/puzzle) -->
     <div class="crossword-layout">
-      <!-- Lyrics with Blanks -->
       <div class="lyrics-container">
         <h2>LYRICS</h2>
         <p id="lyrics"></p>
       </div>
-
-      <!-- Clues Section -->
-      <div class="clues-container">
-        <h2>CLUES</h2>
-        <div id="clues" class="clues"></div>
-      </div>
     </div>
 
-    <!-- Feedback message -->
+    <!-- Feedback message & link after completion -->
     <div id="message" class="message"></div>
     <div id="link-container" class="link-container"></div>
   </div>
