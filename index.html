@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Responsive viewport scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Optional: give your mobile browser UI a matching color -->
+  <meta name="theme-color" content="#2d2d2d">
+  <title>COOPER FLAGG LYRICS PUZZLE</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <!-- Background video -->
+  <video autoplay muted loop id="bg-video">
+    <source src="cfv.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Main container -->
+  <div class="container">
+    <h1 class="title">COOPER FLAGG LYRICS PUZZLE</h1>
+    
+    <!-- Responsive embed for the YouTube video -->
+    <div class="video-container">
+      <iframe
+        class="responsive-iframe"
+        src="https://www.youtube.com/embed/GW1x96_9A1Q?autoplay=1&mute=1"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Crossword Puzzle Layout -->
+    <div class="crossword-layout">
+      <!-- Lyrics with Blanks -->
+      <div class="lyrics-container">
+        <h2>LYRICS</h2>
+        <p id="lyrics"></p>
+      </div>
+
+      <!-- Clues Section -->
+      <div class="clues-container">
+        <h2>CLUES</h2>
+        <div id="clues" class="clues"></div>
+      </div>
+    </div>
+
+    <!-- Feedback message -->
+    <div id="message" class="message"></div>
+    <div id="link-container" class="link-container"></div>
+  </div>
+</body>
+</html>
