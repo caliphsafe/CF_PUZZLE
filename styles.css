@@ -2,7 +2,7 @@
 
 /* 
   GLOBAL RESET & BASE
-  Introducing some glassmorphism + neons for a modern "webapp" feel
+  Glassmorphism + neons for a modern "webapp" feel
 */
 * {
   margin: 0;
@@ -24,17 +24,7 @@
   z-index: -1;
 }
 
-/* 
-  OPTIONAL: Hide or pause the background video on smaller screens 
-  to improve mobile data usage and performance 
-*/
-@media (max-width: 768px) {
-  #bg-video {
-    display: none;
-  }
-}
-
-/* MAIN CONTAINER with glassmorphism */
+/* CONTAINER with glassmorphism */
 .container {
   width: 95%;
   max-width: 1000px;
@@ -75,7 +65,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* RESPONSIVE IFRAME WRAPPER for YouTube, giving a 16:9 ratio */
+/* VIDEO WRAPPER for YouTube (16:9 ratio) */
 .video-container {
   position: relative;
   width: 100%;
@@ -92,17 +82,15 @@
   border: 0;
 }
 
-/* CROSSWORD LAYOUT */
+/* CROSSWORD LAYOUT (only lyrics in this example) */
 .crossword-layout {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
   gap: 20px;
 }
 
-/* LYRICS & CLUES CONTAINERS */
-.lyrics-container,
-.clues-container {
+.lyrics-container {
   width: 100%;
   max-width: 600px; 
   background: rgba(0, 0, 0, 0.3);
@@ -112,8 +100,7 @@
 }
 
 /* HEADINGS */
-.lyrics-container h2,
-.clues-container h2 {
+.lyrics-container h2 {
   font-size: 1.5em;
   margin-bottom: 15px;
   color: #fff;
@@ -128,50 +115,6 @@
   text-align: left;
   font-size: 0.95em;
   margin-bottom: 15px;
-}
-
-/* CLUES SECTION */
-.clues {
-  color: #ffffff;
-  text-align: left;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.clue {
-  margin: 8px 0;
-  font-size: 0.9em;
-  /* subtle bullet or marker */
-  position: relative;
-  padding-left: 22px;
-}
-
-.clue::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: #fcee0c;
-  font-size: 1em;
-}
-
-/* INPUT BOXES (Lyrics blanks) */
-.input-box {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid #fff;
-  color: #fff;
-  margin: 0 2px;
-  padding: 2px 4px;
-  border-radius: 3px;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  width: auto;
-  text-transform: uppercase;
-}
-
-.input-box:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 5px #fff;
 }
 
 /* FEEDBACK MESSAGE */
@@ -200,6 +143,26 @@
   color: #ffffff;
 }
 
+/* INPUT BOXES (Lyrics blanks) */
+.input-box {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid #fff;
+  color: #fff;
+  margin: 0 2px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  width: auto;
+  text-transform: uppercase;
+}
+
+.input-box:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 5px #fff;
+}
+
 /* ANIMATION FOR CORRECT ANSWERS */
 @keyframes correct-animation {
   0% {
@@ -217,7 +180,7 @@
 }
 
 .correct {
-  color: #00ff00 !important; /* Bright green to indicate success */
+  color: #00ff00 !important; /* Bright green for success */
   font-weight: 700;
   animation: correct-animation 0.5s ease;
 }
@@ -227,30 +190,87 @@
   border: 2px solid red !important;
 }
 
-/* MEDIA QUERY FOR SMALLER SCREENS */
+/* 
+  THE SLIDE-OUT CLUES PANEL
+  (Hidden by default, toggled with a button)
+*/
+#clues-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 10px 15px;
+  background: #f46036;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: background 0.3s ease;
+}
+
+#clues-toggle:hover {
+  background: #f24114;
+}
+
+/* The side panel itself */
+#clues-panel {
+  position: fixed;
+  top: 0;
+  right: -320px; /* Start off-screen to the right */
+  width: 320px;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  padding: 20px;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+  transition: right 0.3s ease;
+  z-index: 9998;
+}
+
+#clues-panel.open {
+  right: 0; /* Slide in */
+}
+
+#clues-panel h2 {
+  margin-bottom: 15px;
+  font-size: 1.3em;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+#clues {
+  max-height: 80vh; /* scroll within the panel if it's long */
+  overflow-y: auto;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.clue {
+  margin: 8px 0;
+  position: relative;
+  padding-left: 22px;
+}
+
+.clue::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #fcee0c;
+  font-size: 1em;
+}
+
+/* MEDIA QUERY for small screens */
 @media (max-width: 768px) {
-  .crossword-layout {
-    display: block; /* Stack lyrics & clues vertically */
-  }
-
-  .lyrics-container,
-  .clues-container {
-    max-width: 100%;
-    margin-bottom: 30px;
-  }
-
-  .title {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-  }
-
   .container {
     margin: 10px auto;
     padding: 15px;
   }
-
-  .video-container {
-    margin-bottom: 20px;
+  
+  .title {
+    font-size: 1.5em;
+    margin-bottom: 15px;
   }
 
   #lyrics {
