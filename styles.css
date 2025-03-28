@@ -1,279 +1,154 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+/************************************
+ * 1) NEW WORDS (answers & clues)   *
+ * 2) UPDATED LYRICS                *
+ * 3) UPDATED REPLACE REGEX         *
+ ************************************/
 
-/* 
-  GLOBAL RESET & BASE
-  Glassmorphism + neons for a modern "webapp" feel
-*/
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
-  text-transform: uppercase; /* Keep everything in uppercase for style */
-  -webkit-font-smoothing: antialiased;
+// 1) NEW WORDS/CLUES based on the parentheses in the new lyrics
+const words = [
+  { answer: "SOLID", clue: "Firm and stable in shape; describing the ones the artist talks to" },
+  { answer: "COPY", clue: "To reproduce or imitate text, images, or style" },
+  { answer: "BARK", clue: "A dog's vocal sound; also another word for tree trunk" },
+  { answer: "MACHINA", clue: "Latin for 'machine'; movie title 'ex _______'" },
+  { answer: "THOT", clue: "Slang term for someone considered promiscuous" },
+  { answer: "ANGINA", clue: "Chest pain due to reduced blood flow to the heart" },
+  { answer: "PREPOSTEROUS", clue: "Contrary to reason or common sense; utterly absurd" },
+  { answer: "PRIVATE", clue: "Not publicly known or for public viewing" },
+  { answer: "ADONIS", clue: "A very handsome young man, from Greek mythology" },
+  { answer: "GOODMUSIC", clue: "A record label founded by Kanye West, NO SPACES (Push & ___)" },
+  { answer: "PEN", clue: "A common instrument used for writing or drawing" },
+  { answer: "WRITE", clue: "To form letters or words on a surface" },
+  { answer: "MAINE", clue: "A state in the New England region of the USA" },
+  { answer: "COOPERFLAGG", clue: "A reference to an event or name 'Cooper Flagg' to be waved" },
+  { answer: "PRINCESS", clue: "Daughter of a monarch; female royal" },
+  { answer: "PEACH", clue: "A soft, juicy fruit with fuzzy skin" },
+  { answer: "BLUE", clue: "A color; can also refer to feeling sad or 'blew' money" },
+  { answer: "DOG", clue: "A domestic animal considered 'man's best friend'" },
+  { answer: "MALE", clue: "Belonging to or characteristic of men" },
+  { answer: "STEVE", clue: "A common male first name, Ex: _____ JOBS or SCUBBA _____" }
+];
+
+// 2) UPDATED LYRICS
+const originalLyrics = `
+I only talk to the (solid) ones <br><br>
+That’s usually the thugs you corporate niggas monotonous <br><br>
+You hate when you mocking us and paste when (copy) us <br><br>
+Either way its Liph at the top of the tree that you (bark)ing up <br><br>
+I down played her crazy dog my ex was a (machina) <br><br>
+I couldn’t see the bot in her or the Blueface (thot) in her <br><br>
+She gave me the (angina), but the stress never stopping us <br><br>
+One of the few lessons that you’ll learn when you walk with us <br><br>
+So please don’t go moving (preposterous) <br><br>
+I did enough damage showing the public the (private) us <br><br>
+A nigga was popping up I got sick of the hiding cause <br><br>
+Immigration made my parents keep a nigga (Adonis) tucked <br><br>
+But now we worldwide with gold trophies on top of us <br><br>
+All it took was a Push and (Good Music) to pop us up <br><br>
+Like, don’t talk to my man like that, I like it when you like that <br><br>
+If it’s beef then its beef, ima fight back <br><br>
+Niggas say we (pen) pals but never (write) back <br><br>
+You ain’t like that, you don’t know what to do with that <br><br>
+Pop up at your (Maine) event, have you waving the (Cooper Flagg) <br><br>
+Point your wife out like who is that? <br><br>
+Your (princess) was throwing me the (peach) and I blew her back <br><br>
+And she got you out here shopping, you ain’t have a clue and you blew (blue) a bag <br><br>
+Guess you ain’t see the (dog) in her my nigga you’re too attached, I’m gone <br><br>
+
+(Male) time nigga, (Steve) ass niggas, she call me for male time <br><br>
+
+Wave that Cooper Flagg nigga
+`;
+
+// 3) REPLACE PARENTHESES WITH INPUT BOXES
+const lyricsElement = document.getElementById("lyrics");
+const lyricsWithInputs = originalLyrics.replace(/\((.*?)\)/g, (match, p1) => {
+  return `<input type="text" class="input-box" data-answer="${p1.toUpperCase()}" maxlength="${p1.length}" />`;
+});
+// Display the lyrics with input boxes
+lyricsElement.innerHTML = lyricsWithInputs;
+
+/* SLIDE-OUT PANEL TOGGLE */
+const cluesToggle = document.getElementById("clues-toggle");
+const cluesPanel = document.getElementById("clues-panel");
+
+cluesToggle.addEventListener("click", () => {
+  cluesPanel.classList.toggle("open");
+});
+
+// Render the clues in the #clues container
+function renderClues() {
+  const cluesContainer = document.getElementById("clues");
+  words.forEach((word, index) => {
+    const clueElement = document.createElement("div");
+    clueElement.className = "clue";
+    clueElement.innerHTML = `<strong>${index + 1}.</strong> ${word.clue}`;
+    cluesContainer.appendChild(clueElement);
+
+    // Attach input-box event listener for each word in order
+    const inputBox = document.querySelectorAll(".input-box")[index];
+    inputBox.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        checkAnswer(inputBox, word.answer);
+      }
+    });
+  });
 }
 
-/* BACKGROUND VIDEO */
-#bg-video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: -1;
-}
-
-/* CONTAINER with glassmorphism */
-.container {
-  width: 95%;
-  max-width: 1000px;
-  margin: 30px auto;
-  padding: 20px;
+// Check the user's answer
+function checkAnswer(input, correctAnswer) {
+  const userAnswer = input.value.toUpperCase();
+  const messageElement = document.getElementById("message");
   
-  /* Glass effect */
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  if (userAnswer === correctAnswer) {
+    // Correct
+    input.value = correctAnswer;
+    input.classList.add("correct");
+    highlightLyrics(correctAnswer);
+    messageElement.textContent = "";
+    checkCompletion();
+  } else {
+    // Incorrect
+    input.value = "";
+    input.classList.add("wrong");
+    setTimeout(() => {
+      input.classList.remove("wrong");
+    }, 1000);
+    messageElement.textContent = "WRONG ANSWER! TRY AGAIN.";
+  }
+}
+
+// Highlight identical answers in the lyrics
+function highlightLyrics(answer) {
+  const inputs = document.querySelectorAll(".input-box");
+  inputs.forEach(box => {
+    if (box.dataset.answer === answer) {
+      box.classList.add("correct");
+    }
+  });
+}
+
+// Check if puzzle is complete
+function checkCompletion() {
+  const inputs = document.querySelectorAll(".input-box");
+  const allFilled = Array.from(inputs).every(input => 
+    input.value === input.dataset.answer
+  );
   
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  if (allFilled) {
+    displayCompletionMessage();
+  }
+}
+
+// Display puzzle completion message & link
+function displayCompletionMessage() {
+  const messageElement = document.getElementById("message");
+  messageElement.textContent = "CONGRATULATIONS! YOU'VE COMPLETED THE PUZZLE!";
   
-  /* Fade-in animation */
-  animation: fadeInContainer 1s ease forwards;
+  const linkContainer = document.getElementById("link-container");
+  linkContainer.innerHTML = 
+    '<a class="link" href="https://your-album-link.com">CONTINUE LISTENING TO THE ALBUM!</a>';
+  linkContainer.style.display = "block";
 }
 
-@keyframes fadeInContainer {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* TITLE with neon gradient text */
-.title {
-  font-size: 2em;
-  margin-bottom: 20px;
-  background: linear-gradient(90deg, #fcee0c 0%, #f46036 50%, #2dd9f3 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* VIDEO WRAPPER for YouTube (16:9 ratio) */
-.video-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 ratio */
-  margin-bottom: 20px;
-}
-
-.responsive-iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-/* CROSSWORD LAYOUT (only lyrics in this example) */
-.crossword-layout {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  gap: 20px;
-}
-
-.lyrics-container {
-  width: 100%;
-  max-width: 600px; 
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  padding: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* HEADINGS */
-.lyrics-container h2 {
-  font-size: 1.5em;
-  margin-bottom: 15px;
-  color: #fff;
-  /* subtle glow */
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
-}
-
-/* LYRICS TEXT */
-#lyrics {
-  color: #ffffff;
-  line-height: 1.6;
-  text-align: left;
-  font-size: 0.95em;
-  margin-bottom: 15px;
-}
-
-/* FEEDBACK MESSAGE */
-.message {
-  margin-top: 20px;
-  font-size: 1.2em;
-  color: #ff7777;
-  font-weight: bold;
-  min-height: 30px;
-}
-
-/* LINK CONTAINER */
-.link-container {
-  margin-top: 20px;
-  display: none;
-}
-
-.link {
-  color: #ffdd00;
-  font-size: 1.2em;
-  text-decoration: underline;
-  transition: color 0.3s;
-}
-
-.link:hover {
-  color: #ffffff;
-}
-
-/* INPUT BOXES (Lyrics blanks) */
-.input-box {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid #fff;
-  color: #fff;
-  margin: 0 2px;
-  padding: 2px 4px;
-  border-radius: 3px;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  width: auto;
-  text-transform: uppercase;
-}
-
-.input-box:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 5px #fff;
-}
-
-/* ANIMATION FOR CORRECT ANSWERS */
-@keyframes correct-animation {
-  0% {
-    transform: scale(1);
-    background-color: rgba(0, 255, 0, 0);
-  }
-  50% {
-    transform: scale(1.1);
-    background-color: rgba(0, 255, 0, 0.3);
-  }
-  100% {
-    transform: scale(1);
-    background-color: rgba(0, 255, 0, 0);
-  }
-}
-
-.correct {
-  color: #00ff00 !important; /* Bright green for success */
-  font-weight: 700;
-  animation: correct-animation 0.5s ease;
-}
-
-/* WRONG ANSWER FLASH */
-.wrong {
-  border: 2px solid red !important;
-}
-
-/* 
-  THE SLIDE-OUT CLUES PANEL
-  (Hidden by default, toggled with a button)
-*/
-#clues-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-  padding: 10px 15px;
-  background: #f46036;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 5px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  transition: background 0.3s ease;
-}
-
-#clues-toggle:hover {
-  background: #f24114;
-}
-
-/* The side panel itself */
-#clues-panel {
-  position: fixed;
-  top: 0;
-  right: -320px; /* Start off-screen to the right */
-  width: 320px;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(10px);
-  color: #fff;
-  padding: 20px;
-  box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-  transition: right 0.3s ease;
-  z-index: 9998;
-}
-
-#clues-panel.open {
-  right: 0; /* Slide in */
-}
-
-#clues-panel h2 {
-  margin-bottom: 15px;
-  font-size: 1.3em;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
-}
-
-#clues {
-  max-height: 80vh; /* scroll within the panel if it's long */
-  overflow-y: auto;
-  font-size: 0.9em;
-  line-height: 1.4;
-}
-
-.clue {
-  margin: 8px 0;
-  position: relative;
-  padding-left: 22px;
-}
-
-.clue::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: #fcee0c;
-  font-size: 1em;
-}
-
-/* MEDIA QUERY for small screens */
-@media (max-width: 768px) {
-  .container {
-    margin: 10px auto;
-    padding: 15px;
-  }
-  
-  .title {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-  }
-
-  #lyrics {
-    font-size: 1em;
-  }
-}
+// Render the clues upon load
+renderClues();
